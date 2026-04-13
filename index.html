@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZ Chat - Abbas Jani</title>
+    <link rel="stylesheet" href="App.css">
+    <style>
+        /* Thora sa style yahan bhi dal dete hain */
+        #chat-container { max-width: 600px; margin: 20px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        #messages { height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; }
+        input { width: 70%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h1 style="text-align: center; color: #2563eb;">AZ Chat</h1>
+        <p style="text-align: center; font-size: 0.8em;">By Abbas Jani</p>
+        <div id="messages"></div>
+        <input type="text" id="userInput" placeholder="Kuch likhein...">
+        <button onclick="sendMessage()">Bheinjein</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const msgDiv = document.getElementById('messages');
+            if(input.value.trim() !== "") {
+                msgDiv.innerHTML += `<div><b>Aap:</b> ${input.value}</div>`;
+                input.value = "";
+                // Server connect hone par yahan AI response aayega
+            }
+        }
+    </script>
+</body>
+</html>
