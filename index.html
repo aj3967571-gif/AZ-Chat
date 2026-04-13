@@ -5,21 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AZ Chat - Abbas Jani</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        #chat-container { width: 90%; max-width: 500px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        #chat-container { width: 95%; max-width: 450px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; height: 80vh; }
         #header { background: #2563eb; color: white; padding: 15px; text-align: center; }
-        #messages { height: 400px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .message { padding: 10px 15px; border-radius: 10px; max-width: 80%; }
+        #messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background: #fafafa; }
+        .message { padding: 10px 15px; border-radius: 10px; max-width: 80%; word-wrap: break-word; }
         .user { align-self: flex-end; background: #2563eb; color: white; }
         .ai { align-self: flex-start; background: #e5e7eb; color: #1f2937; }
         #input-area { display: flex; padding: 15px; border-top: 1px solid #eee; gap: 10px; }
         input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
-        button { padding: 10px; border: none; border-radius: 5px; cursor: pointer; background: #2563eb; color: white; }
+        button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; background: #2563eb; color: white; font-weight: bold; }
     </style>
 </head>
 <body>
     <div id="chat-container">
-        <div id="header"><h2>AZ Chat</h2><small>By Abbas Jani</small></div>
+        <div id="header">
+            <h2 style="margin:0;">AZ Chat</h2>
+            <small>By Abbas Jani</small>
+        </div>
         <div id="messages"></div>
         <div id="input-area">
             <input type="text" id="userInput" placeholder="Kuch likhein...">
@@ -31,28 +34,28 @@
         const messagesDiv = document.getElementById('messages');
         const userInput = document.getElementById('userInput');
 
-        async function sendMessage() {
+        function sendMessage() {
             const text = userInput.value.trim();
             if(!text) return;
 
+            // User Message
             messagesDiv.innerHTML += `<div class="message user">${text}</div>`;
             userInput.value = "";
-            
-            const typingId = "msg-" + Date.now();
-            messagesDiv.innerHTML += `<div class="message ai" id="${typingId}">Typing...</div>`;
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-            try {
-                const response = await fetch("https://az-chat-smoky.vercel.app/chat", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: text })
-                });
-                const data = await response.json();
-                document.getElementById(typingId).innerText = data.reply;
-            } catch (error) {
-                document.getElementById(typingId).innerText = "Server Connect Nahi Hua!";
-            }
+            // AI Response (Simple Logic)
+            setTimeout(() => {
+                let reply = "Abbas Jani, main aapka AI dost hoon! Main aapki kya madad kar sakta hoon?";
+                
+                if(text.includes("hello") || text.includes("salam")) {
+                    reply = "Walaikum Assalam! Kaisay hain aap?";
+                } else if(text.includes("naam")) {
+                    reply = "Mera naam AZ Chat hai, aur mujhe Abbas Jani ne banaya hai.";
+                }
+
+                messagesDiv.innerHTML += `<div class="message ai">${reply}</div>`;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, 500);
         }
     </script>
 </body>
