@@ -1,73 +1,28 @@
-<!DOCTYPE html>
-<html lang="ur">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AZ Chat - Abbas Jani</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        #chat-container { width: 90%; max-width: 500px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
-        #header { background: #2563eb; color: white; padding: 15px; text-align: center; }
-        #messages { height: 400px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .message { padding: 10px 15px; border-radius: 10px; max-width: 80%; }
-        .user { align-self: flex-end; background: #2563eb; color: white; }
-        .ai { align-self: flex-start; background: #e5e7eb; color: #1f2937; }
-        #input-area { display: flex; padding: 15px; border-top: 1px solid #eee; gap: 10px; }
-        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
-        button { padding: 10px; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; }
-        #send-btn { background: #2563eb; color: white; }
-        #voice-btn { background: #ef4444; color: white; }
-    </style>
-</head>
-<body>
-    <div id="chat-container">
-        <div id="header">
-            <h2 style="margin:0;">AZ Chat</h2>
-            <small>By Abbas Jani</small>
-        </div>
-        <div id="messages"></div>
-        <div id="input-area">
-            <input type="text" id="userInput" placeholder="Kuch boleini ya likhein...">
-            <button id="voice-btn" onclick="startVoice()">🎤</button>
-            <button id="send-btn" onclick="sendMessage()">Bheinjein</button>
-        </div>
-    </div>
+async function sendMessage() {
+    const text = userInput.value.trim();
+    if(!text) return;
 
-    <script>
-        const messagesDiv = document.getElementById('messages');
-        const userInput = document.getElementById('userInput');
+    // User message display
+    messagesDiv.innerHTML += `<div class="message user">${text}</div>`;
+    userInput.value = "";
+    
+    // Show Typing...
+    const typingId = "msg-" + Date.now();
+    messagesDiv.innerHTML += `<div class="message ai" id="${typingId}">Typing...</div>`;
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-        // Voice Recognition Setup
-        function startVoice() {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'ur-PK'; // Urdu support
-            recognition.start();
-            document.getElementById('voice-btn').innerText = "🛑";
+    try {
+        // Aapka Vercel link jo screenshot mein dikh raha hai
+        const response = await fetch("https://az-chat-smoky.vercel.app/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: text })
+        });
 
-            recognition.onresult = (event) => {
-                userInput.value = event.results[0][0].transcript;
-                document.getElementById('voice-btn').innerText = "🎤";
-            };
-        }
-
-        async function sendMessage() {
-            const text = userInput.value.trim();
-            if(!text) return;
-
-            // User Message
-            messagesDiv.innerHTML += `<div class="message user">${text}</div>`;
-            userInput.value = "";
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-            // AI Response (Connecting to server)
-            messagesDiv.innerHTML += `<div class="message ai">Typing...</div>`;
-            
-            // Note: Replace the URL below with your Render/Backend link later
-            setTimeout(() => {
-                const lastMsg = messagesDiv.lastElementChild;
-                lastMsg.innerText = "Abbas Jani, main aapka AI dost hoon! Abhi main sirf testing mode par hoon. Jaise hi server connect hoga, main har baat ka jawab doon ga.";
-            }, 1500);
-        }
-    </script>
-</body>
-</html>
+        const data = await response.json();
+        document.getElementById(typingId).innerText = data.reply; 
+    } catch (error) {
+        document.getElementById(typingId).innerText = "Server error! Please check back later.";
+        console.error("Error:", error);
+    }
+}
