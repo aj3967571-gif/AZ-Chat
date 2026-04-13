@@ -1,62 +1,36 @@
-<!DOCTYPE html>
-<html lang="ur">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AZ Chat - Abbas Jani</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        #chat-container { width: 95%; max-width: 450px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; height: 80vh; }
-        #header { background: #2563eb; color: white; padding: 15px; text-align: center; }
-        #messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background: #fafafa; }
-        .message { padding: 10px 15px; border-radius: 10px; max-width: 80%; word-wrap: break-word; }
-        .user { align-self: flex-end; background: #2563eb; color: white; }
-        .ai { align-self: flex-start; background: #e5e7eb; color: #1f2937; }
-        #input-area { display: flex; padding: 15px; border-top: 1px solid #eee; gap: 10px; }
-        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
-        button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; background: #2563eb; color: white; font-weight: bold; }
-    </style>
-</head>
-<body>
-    <div id="chat-container">
-        <div id="header">
-            <h2 style="margin:0;">AZ Chat</h2>
-            <small>By Abbas Jani</small>
-        </div>
-        <div id="messages"></div>
-        <div id="input-area">
-            <input type="text" id="userInput" placeholder="Kuch likhein...">
-            <button onclick="sendMessage()">Bheinjein</button>
-        </div>
-    </div>
+function sendMessage() {
+    const text = userInput.value.trim().toLowerCase();
+    if(!text) return;
 
-    <script>
-        const messagesDiv = document.getElementById('messages');
-        const userInput = document.getElementById('userInput');
+    messagesDiv.innerHTML += `<div class="message user">${userInput.value}</div>`;
+    userInput.value = "";
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-        function sendMessage() {
-            const text = userInput.value.trim();
-            if(!text) return;
+    setTimeout(() => {
+        let reply = "";
 
-            // User Message
-            messagesDiv.innerHTML += `<div class="message user">${text}</div>`;
-            userInput.value = "";
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-            // AI Response (Simple Logic)
-            setTimeout(() => {
-                let reply = "Abbas Jani, main aapka AI dost hoon! Main aapki kya madad kar sakta hoon?";
-                
-                if(text.includes("hello") || text.includes("salam")) {
-                    reply = "Walaikum Assalam! Kaisay hain aap?";
-                } else if(text.includes("naam")) {
-                    reply = "Mera naam AZ Chat hai, aur mujhe Abbas Jani ne banaya hai.";
-                }
-
-                messagesDiv.innerHTML += `<div class="message ai">${reply}</div>`;
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }, 500);
+        // Alag-alag baaton ke liye alag jawab
+        if(text.includes("salam") || text.includes("hello") || text.includes("hi")) {
+            reply = "Walaikum Assalam! Kaisay hain Abbas bhai? Main aapka AI dost hoon.";
+        } 
+        else if(text.includes("kaise ho") || text.includes("how are you")) {
+            reply = "Main bilkul theek hoon! Aap sunao, kya chal raha hai aaj kal?";
         }
-    </script>
-</body>
-</html>
+        else if(text.includes("naam") || text.includes("who are you")) {
+            reply = "Mera naam AZ Chat hai. Mujhe Abbas Jani ne banaya hai!";
+        }
+        else if(text.includes("khana") || text.includes("lunch")) {
+            reply = "Main to AI hoon, main khana nahi khata. Par aapne kya khaya?";
+        }
+        else if(text.includes("shukriya") || text.includes("thanks")) {
+            reply = "Koi baat nahi! Hamesha aapki madad ke liye hazir hoon.";
+        }
+        else {
+            // Agar kuch samajh na aaye to ye bolega
+            reply = "Zabardast baat hai! Aur kuch batao mujhe is baare mein?";
+        }
+
+        messagesDiv.innerHTML += `<div class="message ai">${reply}</div>`;
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }, 600);
+}
